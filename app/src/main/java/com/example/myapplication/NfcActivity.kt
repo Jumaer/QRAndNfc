@@ -47,6 +47,7 @@ class NfcActivity : AppCompatActivity() {
         }
     }
 
+    // Test
     override fun onPause() {
         disableNfcForegroundDispatch()
         super.onPause()
