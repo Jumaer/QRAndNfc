@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="scanQr">Scan Qr Code</string>
+    <string name="scan">Custom Scan</string>
+    <string name="content_description">Cancel</string>
+    <string name="flash">Flash</string>
+    <string name="tap_to_scan">Tap To Scan Card</string>
+    <string name="image">Image</string>
+    <string name="scan_qr_or_gallery">Scan the QR or open image in gallery</string>
+
+    <string name="active_nfc_hint">Please active your Nfc</string>
+    <string name="close">Close</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="location_service_needed">Location Permission Required</string>
+    <string name="camera_permission_needed">Camera Permission Requires</string>
 </resources>

@@ -2,7 +2,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--- For Nfc and Feature data -->
     <uses-permission android:name="android.permission.NFC" />
+
+    <!--- For Nfc or deep link allow not must ... -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
+    <!--- For WIFI State Verify .. ... -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-feature android:name="android.hardware.location.gps" />
+
+
+
+    <!--- For Camera Flush .. ... -->
+    <uses-feature android:name="android.hardware.camera.flash" />
+
+
+    <!--- For Camera .. ... -->
+    <uses-feature android:name="android.hardware.camera.any" />
+
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -24,12 +46,54 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
+
         <activity
-            android:name=".NfcActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".activities.NfcQrScanActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity">
+
+            <!--- For Deep link Start <<< -POINT- >>> -->
+            <intent-filter
+                android:autoVerify="true"
+                android:label="testDeepLink">
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+
+            <!--- For Deep link  list data -->
+            <intent-filter
+                android:autoVerify="true"
+                android:label="SCAN">
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <!--- For Deep link 1 data -->
+                <data android:scheme="https" />
+                <data android:host="www.any_test_domain.com" />
+                <data android:pathPrefix="/any_test_sub_prefix" />
+
+                <!--- For Deep link 2 data -->
+                <data android:scheme="https" />
+                <data android:host="www.any_test_domain_2.com" />
+                <data android:pathPrefix="/any_test_sub_prefix_2" />
+
+                <!--- For Deep link 3 data -->
+
+
+
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+
+            <!--- For Type list meta data -->
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+
+            <!--- For Launch -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

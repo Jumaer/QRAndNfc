@@ -3,4 +3,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="qr_code_reader_square">#FFFFFFFF</color>
+    <color name="scan_normal">#009688</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="_858585">#858585</color>
+    <color name="off_white">#F5F8F8</color>
+    <color name="fade_gray_opp">#BEBEBE</color>
+    <color name="red_cancel">#EE1B0B</color>
 </resources>

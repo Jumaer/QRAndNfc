@@ -6,4 +6,30 @@
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+
+
+    <!-- ** NFC Bottom Sheet Style-->
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/ic_bg_nfc_bottom_sheet</item>
+        <item name="android:layout_marginStart">@dimen/_12sdp</item>
+        <item name="android:layout_marginEnd">@dimen/_12sdp</item>
+        <item name="android:layout_marginTop">@dimen/_minus12sdp</item>
+    </style>
+
+    <style name="MaterialButtonStyle2" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/color_selector_button_change_2</item>
+        <item name="android:textColor">@color/color_selector_text_enable_disable</item>
+        <item name="iconTint">@color/color_selector_text_enable_disable</item>
+    </style>
+
 </resources>
