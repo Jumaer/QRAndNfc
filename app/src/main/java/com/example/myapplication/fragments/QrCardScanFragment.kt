@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -84,15 +85,8 @@ class QrCardScanFragment : Fragment() {
 
 
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-    private val cameraPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) setUpCamera()
-            else PermissionUtils.showPermissionSettings(
-                binding.root,
-                activity,
-                getString(R.string.camera_permission_needed)
-            )
-        }
+    private lateinit var  cameraPermissionLauncher: ActivityResultLauncher<String>
+
 
 
     private lateinit var textRecognizer: TextRecognizer
@@ -140,6 +134,15 @@ class QrCardScanFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentQrCardScanBinding.inflate(inflater, container, false)
         // AppConstants.allContacts = null
+        cameraPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                if (it) setUpCamera()
+                else PermissionUtils.showPermissionSettings(
+                    binding.root,
+                    activity,
+                    getString(R.string.camera_permission_needed)
+                )
+            }
         // camera permission
         cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
         binding.bsContact.btnRequest.setOnClickListener {
@@ -154,6 +157,8 @@ class QrCardScanFragment : Fragment() {
         binding.imgBack.setOnClickListener {
             goBack()
         }
+
+
         // observeForText()
         return binding.root
     }
