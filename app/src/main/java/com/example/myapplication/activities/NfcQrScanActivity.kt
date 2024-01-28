@@ -12,11 +12,17 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavArgument
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
 import com.example.myapplication.dialog.CardCheckNfcDialog
 import com.example.myapplication.nfcSupport.NfcUtils
 import com.example.myapplication.nfcSupport.NfcViewChangeListener
 import com.example.myapplication.R
+import com.example.myapplication.constants.AppConstants.DEEP_LINK_TAG
+import com.example.myapplication.constants.AppConstants.LINK_OF_DATA_URL
+import com.example.myapplication.constants.AppConstants.LINK_OF_DATA_URL_2
 import com.example.myapplication.databinding.ActivityNfcQrScanBinding
 
 class NfcQrScanActivity : AppCompatActivity() {
@@ -33,7 +39,35 @@ class NfcQrScanActivity : AppCompatActivity() {
 
         setNav()
 
+
     }
+
+    private fun handleDeepLink(navGraph: NavGraph, navController: NavController) {
+        if (intent.data != null) {
+            var moveType = 0
+
+            if (intent.dataString?.contains(LINK_OF_DATA_URL) == true) {
+                moveType = 1
+            }
+
+            // top up request link
+            intent.dataString?.substringAfterLast("/")?.let {
+
+                navGraph.apply {
+                    addArgument(DEEP_LINK_TAG, NavArgument.Builder().setDefaultValue(it).build())
+                    if (moveType == 0){
+                      //  setStartDestination(R.id.setId)
+                    }
+
+                    else{
+                       //  setStartDestination(R.id.setId)
+                    }
+                }
+                navController.graph = navGraph
+            }
+        } else navController.setGraph(navGraph, intent.extras)
+    }
+
     private lateinit var currentPage: String
     private fun setNav() {
         val navHostFragment =
@@ -51,6 +85,8 @@ class NfcQrScanActivity : AppCompatActivity() {
             setStartDestination(R.id.nfcScanFragment)
         }
         navController.setGraph(navGraph,intent.extras)
+
+        handleDeepLink(navGraph,navController)
     }
 
 

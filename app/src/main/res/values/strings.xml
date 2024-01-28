@@ -23,4 +23,5 @@
     <string name="image_invalid">Image is invalid</string>
     <string name="welcome_to_nfc_qr_service">Welcome to Nfc and QR Service</string>
     <string name="scan_nfc">NFC Scan</string>
+    <string name="successfully_get_nfc">Successfully get NFC</string>
 </resources>

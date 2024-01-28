@@ -23,8 +23,8 @@ object AppConstants {
     var NEW_PAPER_CARD = false
 
 
-    const val EVER_PROFILE = "https://www.domain_name.com/nfc-qr-ever/profile"
-    const val HASH_URL_BASE = "https://www.domain_name.com/nfc-qr/"
+    const val EVER_PROFILE = "https://www.domain_name1.com/nfc-qr-ever/profile"
+    const val HASH_URL_BASE = "https://www.domain_name1.com/nfc-qr/"
 
 
     /**
@@ -34,6 +34,6 @@ object AppConstants {
     const val SHOW_QR_PREVIEW = "SHOW_QR_PREVIEW"
 
 
-    const val LINK_OF_DATA_URL = "domain_name.com/prefix1"
-    const val LINK_OF_DATA_URL_2 = "domain_name.com/prefix2"
+    const val LINK_OF_DATA_URL = "domain_name1.com/prefix1"
+    const val LINK_OF_DATA_URL_2 = "domain_name2.com/prefix2"
 }

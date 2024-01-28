@@ -186,6 +186,10 @@ class QrCardScanFragment : Fragment() {
             }
         }
 
+        bsScan.dismiss()
+        Toast.makeText(mContext,resultText,Toast.LENGTH_SHORT).show()
+        startScan()
+
 
         return
     }
@@ -309,13 +313,15 @@ class QrCardScanFragment : Fragment() {
             stopScan()
             data = qrCode.replace(AppConstants.EVER_PROFILE, "")
 
-           // bundleOf(AppConstants.SHOW_QR_PREVIEW to data)
+            val bundle = bundleOf(AppConstants.SHOW_QR_PREVIEW to data)
+            // Move with bundle ...
         } else if (qrCode.contains(AppConstants.HASH_URL_BASE.trim())) {
             stopScan()
             data = qrCode.replace(AppConstants.HASH_URL_BASE, "")
 
 
-           // bundleOf(AppConstants.DEEP_LINK_TAG to data)
+            val bundle = bundleOf(AppConstants.DEEP_LINK_TAG to data)
+            // Move with bundle ...
 
         } else {
             startScan()

@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.activities.NfcQrScanActivity
 import com.example.myapplication.constants.AppConstants
 import com.example.myapplication.databinding.FragmentNfcScanBinding
 import com.example.myapplication.dialog.CardFailureDialog
+import com.example.myapplication.dialog.NfcCardSuccessDialog
 import com.example.myapplication.nfcSupport.CommunicatorRefresh
 import com.example.myapplication.nfcSupport.NfcUtils
 import com.example.myapplication.nfcSupport.NfcViewChangeListener
@@ -65,9 +67,9 @@ class NfcScanFragment : Fragment() {
      * calling from activity
      */
 
-    private var listener: CommunicatorRefresh? = null
+
     private fun nfcOperations() {
-        listener = setListenerForRefresh()
+
         (activity as NfcQrScanActivity).tryForNfc(object : NfcViewChangeListener {
             override fun onPositiveView(isDeviceActive: Boolean) {
                 performNoNfcFound(isDeviceActive)
@@ -87,15 +89,6 @@ class NfcScanFragment : Fragment() {
     }
 
 
-    // IF card add success ..
-    private fun setListenerForRefresh(): CommunicatorRefresh {
-        return object : CommunicatorRefresh {
-            override fun onSuccess() {
-                // refreshData()
-            }
-
-        }
-    }
 
     // If NFC  found in phone
     private fun performReadData(intent: Intent) {
@@ -119,7 +112,23 @@ class NfcScanFragment : Fragment() {
         val uri = URI(linkText)
         val path = uri.path
         val idStr = path.substring(path.lastIndexOf('/') + 1)
+        showSuccessPopUp(idStr)
 
-        //viewModel.showNfcCardPreview(typeToken, idStr)
+    }
+
+
+    private fun showSuccessPopUp(idStr: String) {
+
+        /**
+         * Show success pop up
+         */
+        NfcCardSuccessDialog(mContext,
+            getString(R.string.successfully_get_nfc),
+            object : NfcCardSuccessDialog.OnDismissListener {
+                override fun onDismiss() {
+                      Toast.makeText(mContext,idStr,Toast.LENGTH_SHORT).show()
+                }
+            })
+
     }
 }
