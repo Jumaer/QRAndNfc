@@ -1,4 +1,4 @@
-package com.example.myapplication.NfcSupport
+package com.example.myapplication.nfcSupport
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,8 +6,8 @@ import android.content.Intent
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.Tag
-import com.example.myapplication.Dialog.CardCheckNfcDialog
-import com.example.myapplication.NfcSupport.BundleUtils.parcelable
+import com.example.myapplication.dialog.CardCheckNfcDialog
+import com.example.myapplication.nfcSupport.BundleUtils.parcelable
 
 object NfcUtils {
 

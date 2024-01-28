@@ -32,4 +32,14 @@
         <item name="iconTint">@color/color_selector_text_enable_disable</item>
     </style>
 
+    <!-- ** Bottom Sheet -->
+
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+    </style>
+
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_layout_border_r16_white_top_curve</item>
+    </style>
+
 </resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_nfc_qr_card.xml"
+    app:startDestination="@id/nfcScanFragment">
+
+    <fragment
+        android:id="@+id/qrCardScanFragment"
+        android:name="com.example.myapplication.fragments.QrCardScanFragment"
+        tools:layout="@layout/fragment_qr_card_scan"
+        android:label="QrCardScanFragment" />
+    <fragment
+        android:id="@+id/nfcScanFragment"
+        android:name="com.example.myapplication.fragments.NfcScanFragment"
+        android:label="fragment_nfc_scan"
+        tools:layout="@layout/fragment_nfc_scan" >
+        <action
+            android:id="@+id/action_nfcScanFragment_to_qrCardScanFragment"
+            app:destination="@id/qrCardScanFragment" />
+    </fragment>
+</navigation>

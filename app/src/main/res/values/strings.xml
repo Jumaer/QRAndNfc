@@ -13,4 +13,14 @@
     <string name="open_settings">Open Settings</string>
     <string name="location_service_needed">Location Permission Required</string>
     <string name="camera_permission_needed">Camera Permission Requires</string>
+    <string name="something_went_wrong">Something Went Wrong</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="analyzing_business_card">Analyzing business card</string>
+    <string name="this_is_not_a_our_nfc">"This is not our NFC "</string>
+    <string name="get_and_retry">Get our card and retry</string>
+    <string name="nfcNotSupported">Sorry! Your device doesn\'t support NFC</string>
+    <string name="image_invalid">Image is invalid</string>
+    <string name="welcome_to_nfc_qr_service">Welcome to Nfc and QR Service</string>
+    <string name="scan_nfc">NFC Scan</string>
 </resources>

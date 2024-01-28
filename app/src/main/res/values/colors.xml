@@ -9,4 +9,6 @@
     <color name="off_white">#F5F8F8</color>
     <color name="fade_gray_opp">#BEBEBE</color>
     <color name="red_cancel">#EE1B0B</color>
+    <color name="color_off_white">#F7F6F6</color>
+    <color name="colorMainLightGray">#FCEAF0</color>
 </resources>

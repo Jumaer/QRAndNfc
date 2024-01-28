@@ -1,4 +1,4 @@
-package com.example.myapplication.NfcSupport
+package com.example.myapplication.nfcSupport
 
 import android.content.Intent
 import android.os.Build

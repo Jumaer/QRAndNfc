@@ -1,5 +1,6 @@
 package com.example.myapplication.fragments
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.content.ContentValues
 import android.content.Context
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -24,15 +26,43 @@ import androidx.camera.view.LifecycleCameraController
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
+import androidx.navigation.fragment.findNavController
 import com.example.myapplication.PermissionUtils
 import com.example.myapplication.R
+import com.example.myapplication.constants.AppConstants
+import com.example.myapplication.constants.AppConstants.ADDRESS_KEY
+import com.example.myapplication.constants.AppConstants.COMPANY
+import com.example.myapplication.constants.AppConstants.INSTAGRAM
+import com.example.myapplication.constants.AppConstants.JOB_TITLE
+import com.example.myapplication.constants.AppConstants.LINKED_IN
+import com.example.myapplication.constants.AppConstants.MAIL
+import com.example.myapplication.constants.AppConstants.NAME
+import com.example.myapplication.constants.AppConstants.NEW_PAPER_CARD
+import com.example.myapplication.constants.AppConstants.PHONE
+import com.example.myapplication.constants.AppConstants.WEB
 import com.example.myapplication.databinding.FragmentQrCardScanBinding
+import com.example.myapplication.dialog.CardFailureDialog
+import com.example.myapplication.dialog.CardScanDetectDialog
+import com.example.myapplication.model.ContactScanModel
+import com.example.myapplication.model.TextDataResponse
+import com.example.myapplication.model.TextResponse
+import com.example.myapplication.nfcSupport.AnimationUtils
+import com.example.myapplication.nfcSupport.ImageUtils
+
+import com.google.gson.Gson
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.MultiFormatReader
+import com.google.zxing.RGBLuminanceSource
+import com.google.zxing.common.HybridBinarizer
+import okhttp3.RequestBody
 import org.json.JSONObject
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -46,6 +76,9 @@ class QrCardScanFragment : Fragment() {
    private lateinit var binding : FragmentQrCardScanBinding
    private lateinit var mContext : Context
    private lateinit var TAG : String
+
+
+
 
 
 
@@ -92,6 +125,45 @@ class QrCardScanFragment : Fragment() {
     private var contactDataList = mutableMapOf<String?, String?>()
 
 
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+        TAG = "NFC CARD SCAN"
+    }
+
+
+
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentQrCardScanBinding.inflate(inflater, container, false)
+        // AppConstants.allContacts = null
+        // camera permission
+        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        binding.bsContact.btnRequest.setOnClickListener {
+            if (::outputOpt.isInitialized)
+                capturePhoto(outputOpt)
+        }
+        binding.bsContact.imgHistory.setOnClickListener {
+          //  imgPickerScan()
+        }
+        textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+
+        binding.imgBack.setOnClickListener {
+            goBack()
+        }
+        // observeForText()
+        return binding.root
+    }
+
+    private fun goBack() {
+        if (parentFragmentManager.backStackEntryCount == 0) activity?.finish()
+        else findNavController().popBackStack()
+    }
+
+
     /**
      * Custom process
      */
@@ -109,31 +181,18 @@ class QrCardScanFragment : Fragment() {
             }
         }
 
-//
-//        viewModel.getTextResult(
-//            DigBusinessCardService.getUrlTextProcess(),
-//            GLOBAL_CHECK_PC_API_KEY,
-//            getBody(resultText)
-//        )
 
         return
     }
 
-    private fun observeForText() {
-//        Log.e(TAG, body)
-//        if (NetworkUtils.isValidResponse(it)) {
-//            val response =
-//                Gson().fromJson(body, TextResponse::class.java)
-//            if (response.status == true) {
-//                setDataView(response.data)
-//            } else {
-//                if (response.errMsg != null) {
-//                    initialView(response.errMsg)
-//                } else initialView()
-//            }
-//        } else {
-//            showToast(getString(R.string.something_went_wrong))
-//        }
+
+    /**
+     * Do something with this data ..
+     */
+    private fun observeForText(body : String) {
+        val response =
+            Gson().fromJson(body, TextResponse::class.java)
+
     }
 
     private fun initialView(title: String? = null) {
@@ -148,9 +207,9 @@ class QrCardScanFragment : Fragment() {
     private fun serverErrorFail(title: String? = null) {
         if (title == null) return
         if (!isAlreadyCalled)
-            DigBusinessCardFailureDialog(
+            CardFailureDialog(
                 mContext,
-                object : DigBusinessCardFailureDialog.OnDismissListener {
+                object : CardFailureDialog.OnDismissListener {
                     override fun onDismiss() {
                         isAlreadyCalled = false
                     }
@@ -178,28 +237,22 @@ class QrCardScanFragment : Fragment() {
     }
 
 
-    private fun getBody(data: String): RequestBody {
-        val jsonObject = JSONObject().apply {
-            put("text", data.trimEnd())
-        }
-        return jsonObject.toString().toRequestBody()
-
+    private fun getBody(data: String): RequestBody? {
+      // Prepare json body
+      return null
     }
 
     private var uri: String? = null
 
-    private fun getCardScanBottomSheet(): DigBusinessCardCardScanDetectDialog {
-        return DigBusinessCardCardScanDetectDialog(
+    private fun getCardScanBottomSheet(): CardScanDetectDialog {
+        return CardScanDetectDialog(
             mContext,
-            object : DigBusinessCardCardScanDetectDialog.OnScanSuccess {
+            object : CardScanDetectDialog.OnScanSuccess {
                 override fun onSuccess() {
                     if (contactDataList.isNotEmpty()) {
                         NEW_PAPER_CARD = true
-                        val data = DigBusinessCardContactScanModel(uri, contactDataList, true, null)
-                        findNavController().navigate(
-                            R.id.action_digitalBusinessCardNfcScanFragment_to_digitalBusinessCardOthersActivity,
-                            bundleOf(DigitalBusinessCardConstants.DBC_VC_SCAN_EDIT to data)
-                        )
+                        val data = ContactScanModel(uri, contactDataList, true, null)
+
                         activity?.finish()
                     }
                 }
@@ -247,21 +300,17 @@ class QrCardScanFragment : Fragment() {
     private fun checkArgument(qrCode: String) {
 
         var data = ""
-        if (qrCode.contains(DigitalBusinessCardConstants.EVER_PROFILE.trim())) {
+        if (qrCode.contains(AppConstants.EVER_PROFILE.trim())) {
             stopScan()
-            data = qrCode.replace(DigitalBusinessCardConstants.EVER_PROFILE, "")
+            data = qrCode.replace(AppConstants.EVER_PROFILE, "")
 
-            findNavController().navigate(
-                R.id.action_digitalBusinessCardNfcScanFragment_to_digitalBusinessCardOthersActivity,
-                bundleOf(DigitalBusinessCardConstants.SHOW_QR_PREVIEW to data)
-            )
-        } else if (qrCode.contains(DigitalBusinessCardConstants.HASH_URL_BASE.trim())) {
+           // bundleOf(AppConstants.SHOW_QR_PREVIEW to data)
+        } else if (qrCode.contains(AppConstants.HASH_URL_BASE.trim())) {
             stopScan()
-            data = qrCode.replace(DigitalBusinessCardConstants.HASH_URL_BASE, "")
-            findNavController().navigate(
-                R.id.action_digitalBusinessCardNfcScanFragment_to_digitalBusinessCardOthersActivity,
-                bundleOf(DigitalBusinessCardConstants.DEEP_LINK_TAG to data)
-            )
+            data = qrCode.replace(AppConstants.HASH_URL_BASE, "")
+
+
+           // bundleOf(AppConstants.DEEP_LINK_TAG to data)
 
         } else {
             startScan()
@@ -348,7 +397,7 @@ class QrCardScanFragment : Fragment() {
 
     }
 
-    private lateinit var bsScan: DigBusinessCardCardScanDetectDialog
+    private lateinit var bsScan: CardScanDetectDialog
 
     private fun processForImage(output: ImageCapture.OutputFileResults) {
         output.savedUri?.let {
@@ -503,20 +552,13 @@ class QrCardScanFragment : Fragment() {
             checkArgument(qrCode)
 
         } catch (e: Exception) {
-            showToast(getString(R.string.image_invalid))
+            Toast.makeText(mContext,getString(R.string.image_invalid),Toast.LENGTH_SHORT).show()
         }
 
         return
     }
 
-    private fun imgPickerScan() {
-        ImagePickerDialogFragment(object : ImagePickerDialogFragment.OnImagePickListener {
-            override fun onImagePick(uri: Uri) {
-                scanGalleryImage(ImageUtils.getBitmap(mContext, uri))
-            }
 
-        }).showNow(childFragmentManager, TAG)
-    }
 
 
     /**

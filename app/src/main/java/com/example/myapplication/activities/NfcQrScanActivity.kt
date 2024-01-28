@@ -11,9 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
-import com.example.myapplication.Dialog.CardCheckNfcDialog
-import com.example.myapplication.NfcSupport.NfcUtils
-import com.example.myapplication.NfcSupport.NfcViewChangeListener
+import androidx.core.view.WindowCompat
+import androidx.navigation.fragment.NavHostFragment
+import com.example.myapplication.dialog.CardCheckNfcDialog
+import com.example.myapplication.nfcSupport.NfcUtils
+import com.example.myapplication.nfcSupport.NfcViewChangeListener
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityNfcQrScanBinding
 
@@ -25,10 +27,30 @@ class NfcQrScanActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         binding = ActivityNfcQrScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setNav()
 
+    }
+    private lateinit var currentPage: String
+    private fun setNav() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            currentPage = destination.label.toString()
+        }
+        val navGraph = navController.navInflater.inflate(R.navigation.nav_nfc_qr_card)
+        this.window.apply { ->
+            if (this != null)
+                WindowCompat.getInsetsController(this, decorView).isAppearanceLightStatusBars = true
+        }
+        navGraph.apply {
+            setStartDestination(R.id.nfcScanFragment)
+        }
+        navController.setGraph(navGraph,intent.extras)
     }
 
 
@@ -148,6 +170,8 @@ class NfcQrScanActivity : AppCompatActivity() {
         super.onDestroy()
        // ImageUtils.clearCache(this)
     }
+
+
 
 
 }
