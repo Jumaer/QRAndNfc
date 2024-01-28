@@ -1,4 +1,4 @@
-# QRAndNfc *** This is an app that can scan or detect nfc. Also can scann paper card (OCR) and can detect QR with same camera and same view.
+# QRAndNfc *** This is an app that can scan or detect nfc. Also can scan paper card (OCR) and can detect QR with same camera and same view.
 
 
 
