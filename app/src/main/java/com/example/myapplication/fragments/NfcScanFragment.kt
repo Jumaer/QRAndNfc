@@ -11,15 +11,20 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.activities.NfcQrScanActivity
+import com.example.myapplication.constants.AppConstants
 import com.example.myapplication.databinding.FragmentNfcScanBinding
+import com.example.myapplication.dialog.CardFailureDialog
+import com.example.myapplication.nfcSupport.CommunicatorRefresh
+import com.example.myapplication.nfcSupport.NfcUtils
 import com.example.myapplication.nfcSupport.NfcViewChangeListener
+import java.net.URI
 
 
 class NfcScanFragment : Fragment() {
 
-    private lateinit var binding : FragmentNfcScanBinding
-    private lateinit var mContext : Context
-    private lateinit var TAG : String
+    private lateinit var binding: FragmentNfcScanBinding
+    private lateinit var mContext: Context
+    private lateinit var TAG: String
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -27,7 +32,11 @@ class NfcScanFragment : Fragment() {
         TAG = "NFC CARD SCAN"
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentNfcScanBinding.inflate(inflater, container, false)
 
         setListeners(binding)
@@ -38,24 +47,79 @@ class NfcScanFragment : Fragment() {
     private fun setListeners(bind: FragmentNfcScanBinding) {
         bind.apply {
             nfcScan.setOnClickListener {
-               nfcOperations()
+                nfcOperations()
             }
             customScan.setOnClickListener {
-                findNavController().navigate(R.id.action_nfcScanFragment_to_qrCardScanFragment)
+                moveForScan()
             }
         }
     }
 
-    private fun nfcOperations() {
-        (activity as NfcQrScanActivity).tryForNfc(object : NfcViewChangeListener{
-            override fun onPositiveView(isDeviceActive: Boolean) {
+    private fun moveForScan() {
+        findNavController().navigate(R.id.action_nfcScanFragment_to_qrCardScanFragment)
+    }
 
+    /**
+     * Bottom sheet of nfc will start from here
+     * no param required
+     * calling from activity
+     */
+
+    private var listener: CommunicatorRefresh? = null
+    private fun nfcOperations() {
+        listener = setListenerForRefresh()
+        (activity as NfcQrScanActivity).tryForNfc(object : NfcViewChangeListener {
+            override fun onPositiveView(isDeviceActive: Boolean) {
+                performNoNfcFound(isDeviceActive)
             }
 
             override fun readFromIntent(intent: Intent) {
-
+                performReadData(intent)
             }
 
         })
+    }
+
+    private fun performNoNfcFound(isDeviceActive: Boolean) {
+        if (!isDeviceActive) {
+            moveForScan()
+        }
+    }
+
+
+    // IF card add success ..
+    private fun setListenerForRefresh(): CommunicatorRefresh {
+        return object : CommunicatorRefresh {
+            override fun onSuccess() {
+                // refreshData()
+            }
+
+        }
+    }
+
+    // If NFC  found in phone
+    private fun performReadData(intent: Intent) {
+        val linkText = NfcUtils.processDataOfIntent(intent)
+        Log.d(TAG, linkText)
+        if (linkText.contains(AppConstants.LINK_OF_DATA_URL)) {
+            generateCardInfo(linkText)
+
+        } else {
+            CardFailureDialog(mContext,
+                object : CardFailureDialog.OnDismissListener {
+                    override fun onDismiss() {
+
+                    }
+                })
+
+        }
+    }
+
+    private fun generateCardInfo(linkText: String) {
+        val uri = URI(linkText)
+        val path = uri.path
+        val idStr = path.substring(path.lastIndexOf('/') + 1)
+
+        //viewModel.showNfcCardPreview(typeToken, idStr)
     }
 }

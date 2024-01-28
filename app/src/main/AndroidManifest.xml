@@ -71,13 +71,13 @@
 
                 <!--- For Deep link 1 data -->
                 <data android:scheme="https" />
-                <data android:host="www.any_test_domain.com" />
-                <data android:pathPrefix="/any_test_sub_prefix" />
+                <data android:host="www.domain_name1.com" />
+                <data android:pathPrefix="/prefix1" />
 
                 <!--- For Deep link 2 data -->
                 <data android:scheme="https" />
-                <data android:host="www.any_test_domain_2.com" />
-                <data android:pathPrefix="/any_test_sub_prefix_2" />
+                <data android:host="www.domain_name2.com" />
+                <data android:pathPrefix="/prefix_2" />
 
                 <!--- For Deep link 3 data -->
 

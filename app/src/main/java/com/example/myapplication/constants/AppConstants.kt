@@ -32,4 +32,8 @@ object AppConstants {
      */
     const val DEEP_LINK_TAG = "DEEP_LINK_TAG"
     const val SHOW_QR_PREVIEW = "SHOW_QR_PREVIEW"
+
+
+    const val LINK_OF_DATA_URL = "domain_name.com/prefix1"
+    const val LINK_OF_DATA_URL_2 = "domain_name.com/prefix2"
 }

@@ -6,3 +6,8 @@ interface NfcViewChangeListener{
     fun onPositiveView(isDeviceActive : Boolean)
     fun readFromIntent(intent: Intent)
 }
+
+
+interface CommunicatorRefresh {
+    fun onSuccess()
+}
